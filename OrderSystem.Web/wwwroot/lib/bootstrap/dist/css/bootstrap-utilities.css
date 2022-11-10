@@ -1513,6 +1513,10 @@
   border-radius: 0.3rem !important;
 }
 
+.rounded-4 {
+   border-radius: 0.8rem !important;
+}
+
 .rounded-circle {
   border-radius: 50% !important;
 }
