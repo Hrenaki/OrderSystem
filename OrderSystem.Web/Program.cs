@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OrderSystem.Core.Services;
 using OrderSystem.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,10 @@ builder.Configuration.AddJsonFile("appsettings.json", false, true);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
    options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
+
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderItemService, OrderItemService>();
+builder.Services.AddScoped<IProviderService, ProviderService>();
 
 var app = builder.Build();
 
