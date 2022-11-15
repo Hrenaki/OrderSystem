@@ -1,0 +1,68 @@
+﻿@using OrderSystem.Web.Models;
+@model NewOrderViewModel;
+
+<div class="modal-content">
+	<div class="modal-header">
+		<h1 class="modal-title fs-5">Add order</h1>
+	</div>
+	<div class="modal-body">
+		<form id="new-order-form" asp-action="AddNewOrder" asp-controller="Order">
+			<div id="new-order-validationSummary" class="validation" asp-validation-summary="ModelOnly">
+			</div>
+			<input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+			<div class="mb-3 row justify-content-center">
+				<label asp-for="Number" class="col-sm-3 col-form-label">Number</label>
+				<div class="col-sm-5">
+					<input type="text" class="form-control" asp-for="Number" />
+					<span asp-validation-for="Number" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="mb-3 row justify-content-center">
+				<label asp-for="Date" class="col-sm-3 col-form-label">Date</label>
+				<div class="col-sm-5">
+					<input type="date" class="form-control" asp-for="Date" />
+					<span asp-validation-for="Date" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="mb-3 row justify-content-center">
+				<label asp-for="ProviderId" class="col-sm-3 col-form-label">Provider name</label>
+				<div class="col-sm-5">
+					<select class="form-select" asp-items="@Model.ProviderNames" asp-for="ProviderId"></select>
+					<span asp-validation-for="ProviderId" class="text-danger"></span>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<input id="submit-new-order" type="submit" value="Add order" class="btn btn-primary" />
+	</div>
+
+	<script>
+		var formId = "#new-order-form";
+
+		function setFormSubmitInModal(modalId) {
+			 $('body').on('click', '#submit-new-order', function () {
+				  var sharpModal = '#' + modalId;
+				  var form = $(formId);
+
+				  $.ajax({
+						type: 'POST',
+						url: form.attr('action'),
+						data: form.serialize(),
+						success: function (data) {
+							 $(sharpModal + " .modal-dialog").html(data);
+							 var isValid = $('[name=IsValid]').val() == 'True';
+
+							 if (isValid) {
+								  $(sharpModal).modal('hide');
+								  location.reload();
+							 }
+							 else {
+								  $(sharpModal).modal('show');
+							 }
+						}
+				  });
+			 });
+		}
+	</script>
+</div>

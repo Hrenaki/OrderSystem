@@ -1,0 +1,61 @@
+﻿@using OrderSystem.Web.Models;
+@model OrderFilterValuesViewModel;
+
+<form id="filterForm" asp-action="GetFilteredOrders" asp-controller="Order" class="border rounded-4 bg-white p-3">
+	<div class="input-group mb-3">
+		<span class="input-group-text" id="spanFrom">From</span>
+		<input type="date" class="form-control" asp-for="@Model.DateFrom" placeholder="Start date" aria-label="StartDate" aria-describedby="spanFrom" />
+	</div>
+	<div class="input-group mb-3 m-0">
+		<span class="input-group-text" id="spanTo">To</span>
+		<input type="date" class="form-control" asp-for="@Model.DateTo" placeholder="End date" aria-label="EndDate" aria-describedby="spanTo" />
+	</div>
+	<button class="btn btn-outline-primary mb-3 w-100" type="button" data-bs-toggle="collapse"
+			  data-bs-target="#selectOrderNumberCollapse" aria-expanded="false"
+			  aria-controls="selectOrderNumberCollapse">
+		Order numbers
+	</button>
+	<div class="collapse mb-4" id="selectOrderNumberCollapse">
+		<div class="card card-body" id="multiple-checkboxes">
+			<label for="orderNumbersSelect">Select order numbers</label>
+			<select id="orderNumbersSelect" asp-items="@Model.OrderNumbers"
+					  asp-for="@Model.SelectedOrderNumbers"
+					  class="w-100" size="5" multiple aria-label="Select order numbers">
+			</select>
+		</div>
+	</div>
+	<button class="btn btn-outline-primary w-100 mb-3" type="button" data-bs-toggle="collapse"
+			  data-bs-target="#selectOrderProviderCollapse" aria-expanded="false"
+			  aria-controls="selectOrderProviderCollapse">
+		Providers
+	</button>
+	<div class="collapse mb-4" id="selectOrderProviderCollapse">
+		<div class="card card-body" id="multiple-checkboxes">
+			<label for="orderProvidersSelect">Select providers</label>
+			<select id="orderProvidersSelect" asp-items="@Model.ProviderNames"
+					  asp-for="@Model.SelectedProviderIds"
+					  class="w-100" size="5" multiple aria-label="Select order providers">
+			</select>
+		</div>
+	</div>
+	<button class="btn btn-primary w-100" type="button" id="find-order-btn">
+		Find orders
+	</button>
+
+	<script>
+		function setOrderOutputTo(id) {
+			 $('body').on('click', '#find-order-btn', function() {
+				  var form = $('#filterForm');
+
+				  $.ajax({
+					  type: 'POST',
+					  url: form.attr('action'),
+					  data: form.serialize(),
+					  success: function (data) {
+						  $('#' + id).html(data);
+					  }
+				  })
+			 });
+		}
+	</script>
+</form>

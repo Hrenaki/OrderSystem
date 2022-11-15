@@ -1,0 +1,62 @@
+﻿@using OrderSystem.Web.Models;
+@model EditOrderViewModel;
+
+<form id="edit-order-form" asp-action="UpdateOrder" asp-controller="Order">
+	@if(ViewData.ModelState.IsValid)
+	{
+		<div class="validation text-success">Order editted</div>
+	}
+	else
+	{
+		<div id="edit-order-validationSummary" class="validation text-danger" asp-validation-summary="ModelOnly">
+		</div>
+	}
+	
+	<input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+	<input type="hidden" asp-for="@Model.Id"/>
+	<div class="mb-3 row justify-content-center">
+		<label asp-for="Number" class="col-sm-3 col-form-label">Number</label>
+		<div class="col-sm-5">
+			<input type="text" class="form-control" asp-for="Number" />
+			<span asp-validation-for="Number" class="text-danger"></span>
+		</div>
+	</div>
+	<div class="mb-3 row justify-content-center">
+		<label asp-for="Date" class="col-sm-3 col-form-label">Date</label>
+		<div class="col-sm-5">
+			<input type="date" class="form-control" asp-for="Date" />
+			<span asp-validation-for="Date" class="text-danger"></span>
+		</div>
+	</div>
+	<div class="mb-3 row justify-content-center">
+		<label asp-for="ProviderId" class="col-sm-3 col-form-label">Provider name</label>
+		<div class="col-sm-5">
+			<select class="form-select" asp-items="@Model.ProviderNames" asp-for="ProviderId"></select>
+			<span asp-validation-for="ProviderId" class="text-danger"></span>
+		</div>
+	</div>
+	<div class="mb-3 row justify-content-center">
+		<div class="col-sm-3 col-form-label"></div>
+		<div class="col-sm-5">
+			<input id="submit-edit-order" value="Edit order" class="btn btn-primary w-100" />
+		</div>
+	</div>
+</form>
+
+<script>
+	$('#submit-edit-order').on('click', function () {
+		 form = $('#edit-order-form');
+
+		 url = form.attr('action');
+		 data = form.serialize();
+
+		 $.ajax({
+			  type: 'POST',
+			  url: url,
+			  data: data,
+			  success: function (data) {
+					$('#edit-order-container').html(data);
+			  }
+		 });
+	});
+</script>

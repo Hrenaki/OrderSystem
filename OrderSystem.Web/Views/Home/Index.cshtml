@@ -1,8 +1,34 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using OrderSystem.Web.Models;
+@model HomeViewModel;
+
+@{
+	ViewData["Title"] = "Home Page";
+	ViewData["OrderModal"] = "addOrderModal";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container text-center row justify-content-between">
+	<div class="col-left bg-light min-vh-100 border rounded-4 p-3">
+		<partial name="FilterForm.cshtml" model="@Model.FilterValuesViewModel" />
+	</div>
+	<div class="col-8 bg-light min-vh-100 border rounded-4 p-3">
+		<div class="row justify-content-between m-0">
+			<h3 class="col-auto">Orders</h3>
+			<button id="add-order-btn" class="col-auto btn btn-primary" data-bs-toggle="modal" data-bs-target="#addOrderModal">Add order</button>
+		</div>
+
+		<div id="orders">
+		</div>
+	</div>
+
+	<div class="modal fade" id="@ViewData["OrderModal"]" tabindex="-1" aria-labelledby="addOrderModal" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<partial name="~/Views/Order/NewOrderModal.cshtml" model="@Model.OrderViewModel" />
+		</div>
+	</div>
+
+	<script>
+		setFormSubmitInModal('@ViewData["OrderModal"]');
+		setOrderOutputTo('orders');
+	</script>
 </div>
+
