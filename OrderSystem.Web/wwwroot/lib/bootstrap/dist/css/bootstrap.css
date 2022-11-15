@@ -732,6 +732,11 @@ progress {
   width: 25%;
 }
 
+.col-left {
+	flex: 0 0 auto;
+  width: 30%;
+}
+
 .col-4 {
   flex: 0 0 auto;
   width: 33.33333333%;
@@ -7866,6 +7871,10 @@ textarea.form-control-lg {
 
 .rounded-3 {
   border-radius: 0.3rem !important;
+}
+
+.rounded-4 {
+   border-radius: 0.8rem !important;
 }
 
 .rounded-circle {
