@@ -1,4 +1,5 @@
 ﻿@using OrderSystem.Web.Models;
+@using OrderSystem.Web.Controllers;
 @model HomeViewModel;
 
 @{
@@ -29,6 +30,18 @@
 	<script>
 		setFormSubmitInModal('@ViewData["OrderModal"]');
 		setOrderOutputTo('orders');
+
+		$(document).ready(function () {
+			url = "@Url.Action(nameof(OrderController.GetOrders), "Order")";
+
+			$.ajax({
+				type: 'GET',
+				url: url,
+				success: function (data) {
+					$('#orders').html(data);
+				}
+			})
+		});
 	</script>
 </div>
 

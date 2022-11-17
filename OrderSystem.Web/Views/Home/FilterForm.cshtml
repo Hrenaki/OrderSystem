@@ -10,6 +10,7 @@
 		<span class="input-group-text" id="spanTo">To</span>
 		<input type="date" class="form-control" asp-for="@Model.DateTo" placeholder="End date" aria-label="EndDate" aria-describedby="spanTo" />
 	</div>
+
 	<button class="btn btn-outline-primary mb-3 w-100" type="button" data-bs-toggle="collapse"
 			  data-bs-target="#selectOrderNumberCollapse" aria-expanded="false"
 			  aria-controls="selectOrderNumberCollapse">
@@ -24,13 +25,14 @@
 			</select>
 		</div>
 	</div>
+
 	<button class="btn btn-outline-primary w-100 mb-3" type="button" data-bs-toggle="collapse"
 			  data-bs-target="#selectOrderProviderCollapse" aria-expanded="false"
 			  aria-controls="selectOrderProviderCollapse">
 		Providers
 	</button>
 	<div class="collapse mb-4" id="selectOrderProviderCollapse">
-		<div class="card card-body" id="multiple-checkboxes">
+		<div class="card card-body">
 			<label for="orderProvidersSelect">Select providers</label>
 			<select id="orderProvidersSelect" asp-items="@Model.ProviderNames"
 					  asp-for="@Model.SelectedProviderIds"
@@ -38,6 +40,37 @@
 			</select>
 		</div>
 	</div>
+
+	<button class="btn btn-outline-primary w-100 mb-3" type="button" data-bs-toggle="collapse"
+			  data-bs-target="#selectOrderItemNamesCollapse" aria-expanded="false"
+			  aria-controls="selectOrderProviderCollapse">
+		Order item names
+	</button>
+	<div class="collapse mb-4" id="selectOrderItemNamesCollapse">
+		<div class="card card-body">
+			<label for="orderItemNamesSelect">Select item names</label>
+			<select id="orderItemNamesSelect" asp-items="@Model.OrderItemNames"
+					  asp-for="@Model.SelectedOrderItemNames"
+					  class="w-100" size="5" multiple aria-label="Select order item names">
+			</select>
+		</div>
+	</div>
+
+	<button class="btn btn-outline-primary w-100 mb-3" type="button" data-bs-toggle="collapse"
+			  data-bs-target="#selectOrderItemUnitsCollapse" aria-expanded="false"
+			  aria-controls="selectOrderItemUnitsCollapse">
+		Order item units
+	</button>
+	<div class="collapse mb-4" id="selectOrderItemUnitsCollapse">
+		<div class="card card-body">
+			<label for="orderItemUnitsSelect">Select item units</label>
+			<select id="orderItemUnitsSelect" asp-items="@Model.OrderItemUnits"
+					  asp-for="@Model.SelectedOrderItemUnits"
+					  class="w-100" size="5" multiple aria-label="Select order item units">
+			</select>
+		</div>
+	</div>
+
 	<button class="btn btn-primary w-100" type="button" id="find-order-btn">
 		Find orders
 	</button>
