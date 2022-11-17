@@ -1,3 +1,58 @@
 ﻿@using OrderSystem.Web.Models;
+@using OrderSystem.Web.Controllers;
 @model OrderItemViewModel;
 
+@{
+	var getOrderUrl = Url.Action(nameof(OrderController.GetOrderById), "Order", new { id = Model.OrderId });
+	var deleteOrderItemUrl = Url.Action(nameof(OrderController.DeleteOrderItem), "Order", new { id = Model.Id });
+}
+
+<tr>
+	<th scope="row">@Model.Name</th>
+	<td>@Model.Quantity</td>
+	<td>@Model.Unit</td>
+	<td><button id="@Model.Id-item-edit-btn" class="btn btn-outline-primary w-auto">Edit</button></td>
+	<td><button id="@Model.Id-item-delete-btn" class="btn btn-outline-danger w-auto">Delete</button></td>
+
+	<td hidden>
+	<form id="@Model.Id-order-item-form" asp-action="CreateUpdateOrderItem" asp-controller="Order">
+		<input name="id" asp-for="@Model.Id" />
+		<input name="orderId" asp-for="@Model.OrderId" />
+		<input asp-for="@Model.Name" />
+		<input asp-for="@Model.Quantity" />
+		<input asp-for="@Model.Unit" />
+	</form>
+		<script>
+			$('#@Model.Id-item-delete-btn').on('click', function () {
+				 $.ajax({
+					  type: 'DELETE',
+					  url: "@deleteOrderItemUrl",
+					  success: function (data) {
+							$.ajax({
+								 type: 'GET',
+								 url: "@getOrderUrl",
+								 success: function (data) {
+									  $('#edit-order-md').html(data);
+								 }
+							});
+					  }
+				 });
+			});
+
+			$('#@Model.Id-item-edit-btn').on('click', function () {
+				 form = $('#@Model.Id-order-item-form');
+				 debugger;
+				 $.ajax({
+					  type: 'POST',
+					  url: form.attr('action'),
+					  data: form.serialize(),
+					  success: function (data) {
+							$('#edit-order-item-md').html(data);
+							$('#edit-order-modal').modal('hide');
+							$('#edit-order-item-modal').modal('show');
+					  }
+				 });
+			});
+		</script>
+	</td>
+</tr>

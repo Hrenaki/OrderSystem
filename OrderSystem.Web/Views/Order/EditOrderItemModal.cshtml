@@ -1,0 +1,89 @@
+﻿@using OrderSystem.Web.Models;
+@using OrderSystem.Web.Controllers;
+@model OrderItemViewModel;
+
+@{
+	var getOrderUrl = Url.Action(nameof(OrderController.GetOrderById), "Order", new { id = 1 });
+}
+
+<div class="modal-content">
+	<div class="modal-header">
+		<h2 class="modal-title fs-5">Edit order item</h2>
+		<button class="btn-close" id="order-item-modal-close-btn" data-bs-dismiss="modal"></button>
+	</div>
+	<div class="modal-body">
+
+		<form id="order-item-form" asp-action="CreateUpdateOrderItem" asp-controller="Order">
+			<input type="hidden" name="id" asp-for="@Model.Id" />
+			<input type="hidden" name="orderId" asp-for="@Model.OrderId" />
+			<div id="edit-order-validationSummary" class="validation text-danger" asp-validation-summary="ModelOnly">
+			</div>
+			<input id="order-item-is-valid" name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+			<div class="mb-3 row justify-content-center">
+				<label asp-for="Name" class="col-sm-3 col-form-label">Number</label>
+				<div class="col-sm-5">
+					<input class="form-control" asp-for="@Model.Name" />
+					<span asp-validation-for="Name" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="mb-3 row justify-content-center">
+				<label asp-for="Quantity" class="col-sm-3 col-form-label">Quantity</label>
+				<div class="col-sm-5">
+					<input class="form-control" asp-for="@Model.Quantity" />
+					<span asp-validation-for="Quantity" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="mb-3 row justify-content-center">
+				<label asp-for="Unit" class="col-sm-3 col-form-label">Unit</label>
+				<div class="col-sm-5">
+					<input class="form-control" asp-for="@Model.Unit" />
+					<span asp-validation-for="Unit" class="text-danger"></span>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button id="order-item-edit-btn" class="btn btn-outline-success">Edit</button>
+	</div>
+</div>
+
+<script>
+	$('#order-item-edit-btn').on('click', function () {
+		 form = $('#order-item-form');
+
+		 $.ajax({
+			  type: 'POST',
+			  url: form.attr('action'),
+			  data: form.serialize(),
+			  success: function (data) {
+					$('#edit-order-item-md').html(data);
+					isValid = $('#order-item-is-valid').val() == 'True';
+
+					if (isValid)
+						 closeOrderItemModalUpdateEditOrderModal();
+			  }
+		 });		 
+	});
+
+	$('#order-item-modal-close-btn').on('click', function () {
+		 closeOrderItemModalUpdateEditOrderModal();
+	});
+
+	function closeOrderItemModalUpdateEditOrderModal() {
+		 form = $('#order-item-form');
+
+		 orderId = form.find('[name=orderId]').val();
+		 url = "@getOrderUrl".replace(/.$/, orderId);
+
+		 $.ajax({
+			  type: 'GET',
+			  url: url,
+			  success: function (data) {
+				  debugger;
+					$('#edit-order-md').html(data);
+					$('#edit-order-item-modal').modal('hide');
+					$('#edit-order-modal').modal('show');
+			  }
+		 });
+	}
+</script>

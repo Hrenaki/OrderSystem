@@ -1,5 +1,10 @@
 ﻿@using OrderSystem.Web.Models;
+@using OrderSystem.Web.Controllers;
 @model EditOrderWithItemsViewModel;
+
+@{
+	var orderItemViewModel = new OrderItemViewModel() { OrderId = Model.OrderViewModel.Id };
+}
 
 <div class="modal-content">
 	<div class="modal-header">
@@ -10,27 +15,27 @@
 			<partial name="EditOrder.cshtml" model="@Model.OrderViewModel" />
 		</div>
 		<br />
-		<div class="row justify-content-around">
-			<h4 class="col-4">Order items</h4>
-			<button class="btn btn-primary col-3">Add item</button>
-		</div>
-		@if (Model.OrderItemViewModels.Count > 0)
-		{
-			<table id="order-items-table" class="table table-hover">
-				<thead>
-					<tr>
-						<th scope="col">Name</th>
-						<th scope="col">Quantity</th>
-						<th scope="col">Unit</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach (var viewModel in Model.OrderItemViewModels)
-					{
-						<partial name="EditOrderItem.cshtml" model="@viewModel" />
-					}
-				</tbody>
-			</table>
-		}
+		<form id="order-id-for-item" hidden asp-action="CreateUpdateOrderItem" asp-controller="Order">
+			<input type="hidden" name="OrderId" value="@Model.OrderViewModel.Id"/>
+		</form>
+
+		<partial name="EditOrderItems.cshtml" model="@Model.OrderItemsViewModel" />
 	</div>
 </div>
+
+<script>
+	$('#add-order-item-btn').click(function () {
+		$('#edit-order-modal').modal('hide');
+		form = $('#order-id-for-item');
+
+		$.ajax({
+			type: 'POST',
+			url: form.attr('action'),
+			data: form.serialize(),
+			success: function (data) {
+				$('#edit-order-item-md').html(data);
+				$('#edit-order-item-modal').modal('show');
+			}
+		});
+	});
+</script>

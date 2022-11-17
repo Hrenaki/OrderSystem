@@ -2,18 +2,18 @@
 @model EditOrderViewModel;
 
 <form id="edit-order-form" asp-action="UpdateOrder" asp-controller="Order">
-	@if(ViewData.ModelState.IsValid)
+	@if (ViewData.ModelState.IsValid)
 	{
-		<div class="validation text-success">Order editted</div>
+		<div id="order-editted-div" class="validation text-success"></div>
 	}
 	else
 	{
 		<div id="edit-order-validationSummary" class="validation text-danger" asp-validation-summary="ModelOnly">
 		</div>
 	}
-	
+
 	<input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
-	<input type="hidden" asp-for="@Model.Id"/>
+	<input type="hidden" asp-for="@Model.Id" />
 	<div class="mb-3 row justify-content-center">
 		<label asp-for="Number" class="col-sm-3 col-form-label">Number</label>
 		<div class="col-sm-5">
@@ -56,6 +56,11 @@
 			  data: data,
 			  success: function (data) {
 					$('#edit-order-container').html(data);
+
+					var isValid = $('[name=IsValid]').val() == 'True';
+					if (isValid) {
+						 $('#order-editted-div').text('Order editted');
+					}
 			  }
 		 });
 	});

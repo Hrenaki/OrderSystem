@@ -1,0 +1,42 @@
+﻿@using OrderSystem.Web.Models;
+@using OrderSystem.Web.Controllers;
+@model EditOrderItemsViewModel;
+
+<div class="row justify-content-around">
+	<h4 class="col-4">Order items</h4>
+	<button id="add-order-item-btn" class="btn btn-primary col-3">Add item</button>
+</div>
+
+<form id="add-new-order-item-form" hidden>
+	<input id="add-order-item-id" name="OrderId" type="text" value="@Model.OrderId" hidden />
+</form>
+
+<div class="table-responsive-lg">
+	@if(Model.OrderItemViewModels.Count > 0)
+	{
+		<table id="order-items-table" class="table table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Quantity</th>
+					<th scope="col">Unit</th>
+					<th scope="col"></th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var viewModel in Model.OrderItemViewModels)
+				{
+					<partial name="EditOrderItem.cshtml" model="@viewModel" />
+				}
+			</tbody>
+		</table>
+	}
+</div>
+
+<script>
+	$('#add-order-item-btn').on('click', function () {
+		 $('#edit-order-modal').modal('hide');
+		 $('#edit-order-item-modal').modal('show');
+	});
+</script>

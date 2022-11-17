@@ -16,7 +16,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach(var order in Model.Orders)
+		@foreach (var order in Model.Orders)
 		{
 			<tr>
 				<th scope="row">@order.Id</th>
@@ -29,24 +29,29 @@
 </table>
 
 <div id="edit-order-modal" class="modal fade" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-lg" id="edit-order-md">
+	<div class="modal-dialog modal-xl" id="edit-order-md">
+	</div>
+</div>
+
+<div id="edit-order-item-modal" class="modal fade" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-scrollable" id="edit-order-item-md">
 	</div>
 </div>
 
 <script>
 	$('#order-table tr').click(function () {
-		var row = $(this);
+		 var row = $(this);
 
-		id = row.find('th').text();
-		url = "@url".replace(/.$/, id);
+		 id = row.find('th').text();
+		 url = "@url".replace(/.$/, id);
 
-		$.ajax({
-			type: 'GET',
-			url: url,
-			success: function (data) {
-				$('#edit-order-md').html(data);
-				$('#edit-order-modal').modal('show');
-			}
-		});
+		 $.ajax({
+			  type: 'GET',
+			  url: url,
+			  success: function (data) {
+					$('#edit-order-md').html(data);
+					$('#edit-order-modal').modal('show');
+			  }
+		 });
 	});
 </script>

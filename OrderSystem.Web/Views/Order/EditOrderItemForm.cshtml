@@ -1,0 +1,29 @@
+﻿@using OrderSystem.Web.Models;
+@model OrderItemViewModel;
+
+<form id="order-item-form" asp-action="CreateUpdateOrderItem" asp-controller="Order">
+	<input type="hidden" name="id" asp-for="@Model.Id" value="-1"/>
+	<input type="hidden" asp-for="@Model.OrderId" />
+	<input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+	<div class="mb-3 row justify-content-center">
+		<label asp-for="Name" class="col-sm-3 col-form-label">Number</label>
+		<div class="col-sm-5">
+			<input class="form-control" asp-for="@Model.Name" />
+			<span asp-validation-for="Name" class="text-danger"></span>
+		</div>
+	</div>
+	<div class="mb-3 row justify-content-center">
+		<label asp-for="Quantity" class="col-sm-3 col-form-label">Quantity</label>
+		<div class="col-sm-5">
+			<input class="form-control" asp-for="@Model.Quantity" />
+			<span asp-validation-for="Quantity" class="text-danger"></span>
+		</div>
+	</div>
+	<div class="mb-3 row justify-content-center">
+		<label asp-for="Unit" class="col-sm-3 col-form-label">Unit</label>
+		<div class="col-sm-5">
+			<input class="form-control" asp-for="@Model.Unit" />
+			<span asp-validation-for="Unit" class="text-danger"></span>
+		</div>
+	</div>
+</form>
