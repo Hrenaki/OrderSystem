@@ -13,5 +13,14 @@ namespace OrderSystem.Data
       {
          Database.EnsureCreated();
       }
+
+      protected override void OnModelCreating(ModelBuilder modelBuilder)
+      {
+         modelBuilder.Entity<ProviderEntity>().HasData(
+            new ProviderEntity() { Id = 1, Name = "Yandex" },
+            new ProviderEntity() { Id = 2, Name = "Google" },
+            new ProviderEntity() { Id = 3, Name = "Intel" }
+         );
+      }
    }
 }
