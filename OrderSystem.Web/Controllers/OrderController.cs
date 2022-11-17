@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OrderSystem.Core.Services;
+using OrderSystem.Core.Services.Filters;
 using OrderSystem.Data.Entities;
 using OrderSystem.Web.Models;
+using System.Xml;
 
 namespace OrderSystem.Web.Controllers
 {
@@ -11,18 +13,24 @@ namespace OrderSystem.Web.Controllers
    {
       private readonly IOrderService orderService;
       private readonly IProviderService providerService;
+      private readonly IOrderItemService orderItemService;
 
       private const string newOrderModalViewName = "NewOrderModal";
       private const string IndexViewName = "Index";
       private const string EditOrderViewName = "EditOrder";
+      private const string EditOrderItemViewName = "EditOrderItemModal";
 
-      public OrderController(IOrderService orderService, IProviderService providerService)
+      public OrderController(IOrderService orderService,
+                             IProviderService providerService,
+                             IOrderItemService orderItemService)
       {
          ArgumentNullException.ThrowIfNull(orderService, nameof(orderService));
          ArgumentNullException.ThrowIfNull(providerService, nameof(providerService));
+         ArgumentNullException.ThrowIfNull(orderItemService, nameof(orderItemService));
 
          this.orderService = orderService;
          this.providerService = providerService;
+         this.orderItemService = orderItemService;
       }
 
       [HttpGet("get/{id:int}")]
@@ -44,7 +52,7 @@ namespace OrderSystem.Web.Controllers
          var orderItemList = order.OrderItemEntities.Select(orderItem => new OrderItemViewModel()
          {
             Id = orderItem.Id,
-            OrderId = orderItem.OrderItemEntityId,
+            OrderId = orderItem.OrderEntityId,
             Name = orderItem.Name,
             Quantity = orderItem.Quantity,
             Unit = orderItem.Unit
@@ -53,7 +61,11 @@ namespace OrderSystem.Web.Controllers
          var viewModel = new EditOrderWithItemsViewModel()
          {
             OrderViewModel = editOrderViewModel,
-            OrderItemViewModels = orderItemList
+            OrderItemsViewModel = new EditOrderItemsViewModel()
+            {
+               OrderId = order.Id,
+               OrderItemViewModels = orderItemList
+            }
          };
 
          return PartialView("EditOrderWithItems", viewModel);
@@ -94,16 +106,9 @@ namespace OrderSystem.Web.Controllers
          if (filteringValues == null)
             return BadRequest();
 
-         var filteringObjectBuilder = new OrderFilteringObjectBuilder();
-         filteringObjectBuilder.AddDateFilter(filteringValues.DateFrom, filteringValues.DateTo);
+         var filteringObject = CreateOrderFilteringObject(filteringValues);
+         var orders = orderService.GetOrders(filteringObject);
 
-         if (filteringValues.SelectedOrderNumbers != null)
-            filteringObjectBuilder.AddNumberFilter(filteringValues.SelectedOrderNumbers.ToArray());
-
-         if (filteringValues.SelectedProviderIds != null)
-            filteringObjectBuilder.AddProviderIdFilter(filteringValues.SelectedProviderIds.ToArray());
-
-         var orders = orderService.GetOrders(filteringObjectBuilder.Build());
          return PartialView(IndexViewName, new OrdersViewModel(orders));
       }
 
@@ -134,6 +139,39 @@ namespace OrderSystem.Web.Controllers
          return PartialView(newOrderModalViewName, model);
       }
 
+      [HttpPost("items/update")]
+      public IActionResult CreateUpdateOrderItem([FromForm] OrderItemViewModel model)
+      {
+         if (!ModelState.IsValid)
+            return PartialView(EditOrderItemViewName, model);
+
+         var orderItem = new OrderItemEntity()
+         {
+            Id = model.Id,
+            OrderEntityId = model.OrderId,
+            Name = model.Name,
+            Quantity = model.Quantity,
+            Unit = model.Unit
+         };
+
+         var result = orderItemService.CreateUpdateOrderItem(orderItem);
+
+         if (!result.Success)
+            ModelState.AddModelError("", result.Message);
+
+         return PartialView(EditOrderItemViewName, model);
+      }
+
+      [HttpDelete("items/delete/{id:int}")]
+      public IActionResult DeleteOrderItem(int id)
+      {
+         var result = orderItemService.DeleteOrderItem(id);
+         if (!result.Success)
+            return BadRequest(result.Message);
+
+         return Ok();
+      }
+
       private bool IsOrderWithNumberAndProviderIdExists(string number, int providerId)
       {
          var filteringObject = new OrderFilteringObjectBuilder().AddNumberFilter(number)
@@ -147,6 +185,32 @@ namespace OrderSystem.Web.Controllers
       {
          var providers = service.GetProviders();
          return providers.Select(provider => new SelectListItem(provider.Name, provider.Id.ToString())).ToList();
+      }
+
+      private static OrderFilteringObject CreateOrderFilteringObject(OrderFilterValuesViewModel filteringValues)
+      {
+         var orderFilteringObjectBuilder = new OrderFilteringObjectBuilder();
+         orderFilteringObjectBuilder.AddDateFilter(filteringValues.DateFrom, filteringValues.DateTo);
+
+         if (filteringValues.SelectedOrderNumbers != null)
+            orderFilteringObjectBuilder.AddNumberFilter(filteringValues.SelectedOrderNumbers.ToArray());
+
+         if (filteringValues.SelectedProviderIds != null)
+            orderFilteringObjectBuilder.AddProviderIdFilter(filteringValues.SelectedProviderIds.ToArray());
+
+         if(filteringValues.SelectedOrderItemNames != null)
+         {
+            var orderItemNameFilter = OrderFilterFactory.CreateOrderItemNameFilter(filteringValues.SelectedOrderItemNames);
+            orderFilteringObjectBuilder.AddCustomFilter(orderItemNameFilter);
+         }
+
+         if(filteringValues.SelectedOrderItemUnits != null)
+         {
+            var orderItemUnitFilter = OrderFilterFactory.CreateOrderItemUnitFilter(filteringValues.SelectedOrderItemUnits);
+            orderFilteringObjectBuilder.AddCustomFilter(orderItemUnitFilter);
+         }
+
+         return orderFilteringObjectBuilder.Build();
       }
    }
 }
