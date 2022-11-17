@@ -9,7 +9,8 @@ namespace OrderSystem.Core.Services
 {
 	public interface IOrderItemService
 	{
-		public Result AddOrderItem(OrderItemEntity orderItem);
-		public Result UpdateOrderItem(OrderItemEntity orderItem);
+		public Result CreateUpdateOrderItem(OrderItemEntity orderItem);
+		public Result DeleteOrderItem(int id);
+		public List<OrderItemEntity> GetOrderItems();
 	}
 }

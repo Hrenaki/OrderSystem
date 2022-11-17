@@ -40,7 +40,12 @@ namespace OrderSystem.Core.Services
                                 .FirstOrDefault(order => order.Id == id);
       }
 
-      public List<OrderEntity> GetOrders() => dbContext.Orders.ToList();
+      public List<OrderEntity> GetOrders()
+      {
+         var ordersWithIncludings = dbContext.Orders.Include(order => order.ProviderEntity)
+                                                    .Include(order => order.OrderItemEntities);
+         return ordersWithIncludings.ToList();
+      }
 
       public List<OrderEntity> GetOrders(OrderFilteringObject filteringObject)
       {
