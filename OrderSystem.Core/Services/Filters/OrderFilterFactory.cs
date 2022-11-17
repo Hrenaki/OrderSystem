@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Core.Services.Filters
 {
-   internal static class OrderFilterFactory
+   public static class OrderFilterFactory
    {
       public static IOrderFilter CreateDateFilter(DateTime dateFrom, DateTime dateTo)
       {
@@ -32,6 +32,16 @@ namespace OrderSystem.Core.Services.Filters
       public static IOrderFilter CreateFunctionFilter(Func<IQueryable<OrderEntity>, IQueryable<OrderEntity>> func)
       {
          return new OrderFunctionFilter(func);
+      }
+
+      public static IOrderFilter CreateOrderItemNameFilter(IEnumerable<string> orderItemNames)
+      {
+         return new OrderItemNameFilter(orderItemNames);
+      }
+
+      public static IOrderFilter CreateOrderItemUnitFilter(IEnumerable<string> orderItemUnits)
+      {
+         return new OrderItemUnitFilter(orderItemUnits);
       }
    }
 }
