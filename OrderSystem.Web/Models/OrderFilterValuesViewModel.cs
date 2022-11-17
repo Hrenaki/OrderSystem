@@ -19,9 +19,22 @@ namespace OrderSystem.Web.Models
       public List<int> SelectedProviderIds { get; set; }
 
       [ValidateNever]
+      public List<string> SelectedOrderItemNames { get; set; }
+
+      [ValidateNever]
+      public List<string> SelectedOrderItemUnits { get; set; }
+
+
+      [ValidateNever]
       public List<SelectListItem> OrderNumbers { get; set; }
 
       [ValidateNever]
       public List<SelectListItem> ProviderNames { get; set; }
+
+      [ValidateNever]
+      public List<SelectListItem> OrderItemNames { get; set; }
+
+      [ValidateNever]
+      public List<SelectListItem> OrderItemUnits { get; set; }
    }
 }

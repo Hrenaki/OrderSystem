@@ -3,6 +3,7 @@
 	public class EditOrderWithItemsViewModel
 	{
 		public EditOrderViewModel OrderViewModel { get; set; }
-		public List<OrderItemViewModel> OrderItemViewModels { get; set; }
+		public EditOrderItemsViewModel OrderItemsViewModel { get; set; }
+      
 	}
 }
