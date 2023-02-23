@@ -1,0 +1,9 @@
+﻿{
+	"JwtBearerSettings": {
+		"Issuer": "Hrenaki",
+		"Key": "Hrenaki_QWERTY_1234567890"
+	},
+	"HashServiceSettings": {
+		"Salt": "HRENAKI_QWERTY_^&^%*(&#*%#%()"
+	}
+}
