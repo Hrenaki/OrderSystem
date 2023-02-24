@@ -60,6 +60,10 @@ builder.Services.AddScoped<UserAuthenticationService>();
 
 // ASP.NET Core Services
 builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("frontend", builder => builder.AllowAnyOrigin().AllowAnyHeader());
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -88,6 +92,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+
+app.UseCors("frontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
