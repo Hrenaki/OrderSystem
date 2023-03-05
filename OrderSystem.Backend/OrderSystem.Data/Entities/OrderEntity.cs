@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Data.Entities
 {
-   [Table("Order")]
    public class OrderEntity : Entity
    {
       [Column(TypeName = "nvarchar(max)")]
@@ -15,6 +14,8 @@ namespace OrderSystem.Data.Entities
 
       [Column(TypeName = "datetime2(7)")]
       public DateTime Date { get; set; }
+
+      public int UserId { get; set; }
 
       [Column("ProviderId")]
       [ForeignKey(nameof(ProviderEntity))]

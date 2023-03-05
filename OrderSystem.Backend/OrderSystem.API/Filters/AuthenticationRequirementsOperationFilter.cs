@@ -9,7 +9,11 @@ namespace OrderSystem.API.Filters
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            if (!context.MethodInfo.CustomAttributes.Any(attr => attr.AttributeType.IsAssignableFrom(typeof(AuthorizeAttribute))))
+            var hasAuthorizeAttribute = context.MethodInfo.CustomAttributes.Any(attr => attr.AttributeType.IsAssignableFrom(typeof(AuthorizeAttribute)));
+            var classType = context.MethodInfo.DeclaringType;
+            hasAuthorizeAttribute = hasAuthorizeAttribute ||
+                                    classType is not null && classType.CustomAttributes.Any(attr => attr.AttributeType.IsAssignableFrom(typeof(AuthorizeAttribute)));
+            if (!hasAuthorizeAttribute)
                 return;
 
             if (operation.Security is null)

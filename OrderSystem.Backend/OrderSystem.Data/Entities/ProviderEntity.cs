@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace OrderSystem.Data.Entities
 {
-   [Table("Provider")]
    public class ProviderEntity : Entity
    {
       public string Name { get; set; }

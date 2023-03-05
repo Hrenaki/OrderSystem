@@ -8,6 +8,7 @@ namespace OrderSystem.API.Controllers
 {
     [ApiController]
     [Route("/order")]
+    [Authorize]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService orderService;
@@ -15,15 +16,11 @@ namespace OrderSystem.API.Controllers
 
         public OrderController(IOrderService orderService, IProviderService providerService)
         {
-            ArgumentNullException.ThrowIfNull(orderService, nameof(orderService));
-            ArgumentNullException.ThrowIfNull(providerService, nameof(providerService));
-
             this.orderService = orderService;
             this.providerService = providerService;
         }
 
         [HttpGet("{id:int}")]
-        [Authorize]
         public ActionResult<OrderResponse> GetOrder(int id)
         {
             var order = orderService.GetOrderById(id);
@@ -53,7 +50,6 @@ namespace OrderSystem.API.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize]
         public IActionResult CreateOrder([FromBody] CreateOrderModel order)
         {
             if (orderService.GetOrders().Any(o => o.Number == order.Number && o.ProviderEntity.Name == order.Number))

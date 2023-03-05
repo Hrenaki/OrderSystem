@@ -58,8 +58,8 @@ namespace OrderSystem.Core.Services
         {
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, role.ToString())
+                new Claim(JwtTokenClaimTypes.Username, username),
+                new Claim(JwtTokenClaimTypes.Role, role.ToString())
             };
 
             var expiresAt = DateTime.Now.AddYears(10);
@@ -72,6 +72,12 @@ namespace OrderSystem.Core.Services
 
             return (new JwtSecurityTokenHandler().WriteToken(jwtToken), expiresAt);
         }
+    }
+
+    public static class JwtTokenClaimTypes
+    {
+        public const string Username = "username";
+        public const string Role = "role";
     }
 
     public class AuthenticationResult
