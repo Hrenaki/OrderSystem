@@ -1,3 +1,4 @@
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import jwtDecode from "jwt-decode";
 
 export enum UserRole {
@@ -6,7 +7,7 @@ export enum UserRole {
     Admin = "Admin"
 }
 
-export default class UserState {
+export class UserState {
     private static accessTokenItemName: string = 'access-token';
 
     isLogged: boolean;
@@ -14,11 +15,10 @@ export default class UserState {
     username?: string;
     role: UserRole;
 
-    public static currentState = new UserState();
-
     constructor() {
         const accessToken = localStorage.getItem(UserState.accessTokenItemName);
         const isAuthenticated = this.isAuthenticated(accessToken);
+
         if(!isAuthenticated)
             localStorage.removeItem(UserState.accessTokenItemName);
 
@@ -37,27 +37,39 @@ export default class UserState {
         }
     }
 
-    private isAuthenticated(accessToken: any): boolean {
+    isAuthenticated(accessToken: any): boolean {
         if(!accessToken) return false;
         const { exp } = jwtDecode(accessToken) as any;
         return Date.now() < exp * 1000;
     }
 
-    private getJwtTokenPayload(accessToken: string) {
+    getJwtTokenPayload(accessToken: string) {
         const decodedToken = jwtDecode(accessToken) as any;
+        console.log(decodedToken);
         return {
-            username: decodedToken.unique_name as string,
+            username: decodedToken.username as string,
             userRole: UserRole[decodedToken.role as keyof typeof UserRole]
         };
     }
-
-    public static login(accessToken: string) {
-        localStorage.setItem(UserState.accessTokenItemName, accessToken);
-        UserState.currentState = new UserState();
-    }
-
-    public static logout() {
-        localStorage.removeItem(UserState.accessTokenItemName);
-        UserState.currentState = new UserState();
-    }
 }
+
+const initialUserState = new UserState();
+
+const userSlice = createSlice({
+	name: "user",
+	initialState: initialUserState,
+	reducers: {
+        login(state: UserState, action: PayloadAction<string>): UserState {
+			localStorage.setItem('access-token', action.payload);
+			return new UserState();
+		},
+		logout(state: UserState) : UserState {
+			localStorage.removeItem('access-token');
+			return new UserState();
+		}
+	},
+});
+
+export const {login, logout } = userSlice.actions
+
+export default userSlice.reducer

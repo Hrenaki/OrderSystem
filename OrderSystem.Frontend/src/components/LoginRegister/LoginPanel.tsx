@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useDispatch } from "react-redux";
+
 import 'bootstrap/dist/css/bootstrap.css';
 
 import LoginRequest from '../../api/models/LoginRequest';
 import OrderSystemAPI from '../../api/OrderSystemAPI';
-import UserState from '../../common/UserState';
+import { login } from '../../common/UserState';
 
 enum LoginStatus {
     Ok,
@@ -13,6 +15,8 @@ enum LoginStatus {
 }
 
 const LoginPanel: React.FC = () => {
+    const dispatch = useDispatch();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loginStatus, setLoginStatus] = useState(LoginStatus.Initial);
@@ -38,7 +42,7 @@ const LoginPanel: React.FC = () => {
         try {
             const response = await OrderSystemAPI.LoginAsync(request);
             const {accessToken } = response;
-            UserState.login(accessToken);
+            dispatch(login(accessToken));
         }
         catch(error) {
             const err = error as Error

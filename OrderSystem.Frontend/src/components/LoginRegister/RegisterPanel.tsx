@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import 'bootstrap/dist/css/bootstrap.css';
 
 import LoginRequest from "../../api/models/LoginRequest";
 import OrderSystemAPI from "../../api/OrderSystemAPI";
-import UserState from "../../common/UserState";
+import { login } from '../../common/UserState';
 
 enum RegisterStatus {
     Initial,
@@ -18,6 +19,8 @@ enum PasswordsMatch {
 }
 
 const RegisterPanel: React.FC = () => {
+    const dispatch = useDispatch();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
@@ -60,7 +63,7 @@ const RegisterPanel: React.FC = () => {
         try {
             const response = await OrderSystemAPI.RegisterAsync(request);
             const {accessToken } = response;
-            UserState.login(accessToken);
+            dispatch(login(accessToken));
         }
         catch(error) {
             const err = error as Error
@@ -91,7 +94,7 @@ const RegisterPanel: React.FC = () => {
                     <label htmlFor="floatingRepeatPassword">Repeat password</label>
                 </div>
 
-                <button type="submit" className="btn btn-primary btn-block mb-3">Register</button>
+                <button type="submit" className="btn btn-primary btn-block mb-3" onClick={registerButtonClick}>Register</button>
             </form>
         </div>
     );
