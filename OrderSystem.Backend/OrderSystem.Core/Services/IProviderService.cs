@@ -9,7 +9,7 @@ namespace OrderSystem.Core.Services
 {
    public interface IProviderService
    {
-      public List<ProviderEntity> GetProviders();
+      public IQueryable<ProviderEntity> GetProviders();
       public Result Create(ProviderEntity provider);
    }
 }

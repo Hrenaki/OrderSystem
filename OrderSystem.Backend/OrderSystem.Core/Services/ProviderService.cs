@@ -35,9 +35,9 @@ namespace OrderSystem.Core.Services
             }
         }
 
-        public List<ProviderEntity> GetProviders()
+        public IQueryable<ProviderEntity> GetProviders()
         {
-            return dbContext.Providers.ToList();
+            return dbContext.Providers;
         }
     }
 }
