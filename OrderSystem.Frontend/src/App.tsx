@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
 import LoginRegisterPanel from './components/LoginRegister/LoginRegisterPanel';
 
-import { logout, UserState } from './common/UserState';
+import { UserState } from './common/UserState';
 import MainPanel from './components/MainPanel/MainPanel';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 function App() {
   const isLogged = useSelector<UserState, boolean>((x) => x.isLogged);

@@ -1,8 +1,9 @@
-import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
 import appConfig from '../appConfig';
 import LoginRequest from './models/LoginRequest';
 import LoginResponse from './models/LoginResponse';
+import OrdersResponse from './models/OrdersResponse';
 
 const axiosFactory = (): AxiosInstance => {
     const instance = axios.create({
@@ -23,15 +24,20 @@ export default class OrderSystemAPI {
 
     public static async LoginAsync(request: LoginRequest): Promise<LoginResponse> {
         const response = await this.httpClient.post<LoginResponse>("/account/login", request, {validateStatus: _ => true});
-        if(response.status != 200)
+        if(response.status !== 200)
             throw new Error(response.status.toString());
         return response.data;
     }
 
     public static async RegisterAsync(request: LoginRequest): Promise<LoginResponse> {
         const response = await this.httpClient.post<LoginResponse>("/account/register", request, {validateStatus: _ => true});
-        if(response.status != 200)
+        if(response.status !== 200)
             throw new Error(response.status.toString());
+        return response.data;
+    }
+
+    public static async GetOrdersAsync(): Promise<OrdersResponse> {
+        const response = await this.httpClient.get<OrdersResponse>("/orders");
         return response.data;
     }
 }
