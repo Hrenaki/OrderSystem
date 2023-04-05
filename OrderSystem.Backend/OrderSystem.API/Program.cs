@@ -62,7 +62,7 @@ builder.Services.AddScoped<UserAuthenticationService>();
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("frontend", builder => builder.AllowAnyOrigin().AllowAnyHeader());
+    options.AddPolicy("frontend", builder => builder.WithOrigins("http://localhost:3000").AllowAnyHeader());
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
