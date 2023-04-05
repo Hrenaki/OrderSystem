@@ -12,7 +12,7 @@ namespace OrderSystem.Core.Services
         public OrderEntity? GetOrderById(int id);
         public Result CreateOrder(OrderEntity order);
         public Result UpdateOrder(OrderEntity order);
-        public List<OrderEntity> GetOrders();
+        public IQueryable<OrderEntity> GetOrders();
         public List<OrderEntity> GetOrders(OrderFilteringObject filteringObject);
     }
 }
