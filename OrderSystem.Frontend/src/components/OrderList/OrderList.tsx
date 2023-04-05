@@ -1,24 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import OrderSystemAPI from "../../api/OrderSystemAPI";
 import OrderListItem from "./OrderListItem";
 
-async function OrderList() {
+function OrderList() {
     const [orders, setOrders] = useState(Array(0));
     const [error, setError] = useState("");
 
-    try {
-        const response = await OrderSystemAPI.GetOrdersAsync();
-        if(response.error !== null) {
-            setError(response.error);
+    useEffect(() =>
+    {
+        async function getOrders() {
+            try {
+                const response = await OrderSystemAPI.GetOrdersAsync();
+                if(response.error !== null) {
+                    setError(response.error);
+                }
+                else {
+                    setOrders(response.orders);
+                    setError("");
+                }
+            }
+            catch(error) {
+                setError((error as Error)?.message);
+            }
         }
-        else {
-            setOrders(response.orders);
-            setError("");
-        }
-    }
-    catch(error) {
-        setError((error as Error)?.message);
-    }
+        
+        getOrders();
+    });
 
     const listItems = orders.map(order => (<OrderListItem order={order}/>));
 
