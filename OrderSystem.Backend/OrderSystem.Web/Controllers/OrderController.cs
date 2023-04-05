@@ -96,7 +96,7 @@ namespace OrderSystem.Web.Controllers
       [HttpGet("get")]
       public IActionResult GetOrders()
       {
-         var orders = orderService.GetOrders();
+         var orders = orderService.GetOrders().ToArray();
          return PartialView(IndexViewName, new OrdersViewModel(orders));
       }
 

@@ -6,7 +6,7 @@ namespace OrderSystem.Web.Models
    {
       public OrderViewModel[] Orders { get; init; }
 
-      public OrdersViewModel(List<OrderEntity> orderEntities)
+      public OrdersViewModel(IEnumerable<OrderEntity> orderEntities)
       {
          Orders = orderEntities.Select(entity => new OrderViewModel()
          {

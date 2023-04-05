@@ -31,9 +31,9 @@ namespace OrderSystem.API.Controllers
             var orders = orderService.GetOrders().Where(order => order.UserId == currentUser.Id)
                                      .Select(order => new OrderModel()
                                      {
-                                        Number = order.Number,
-                                        Date = order.Date,
-                                        ProviderName = order.ProviderEntity.Name
+                                         Number = order.Number,
+                                         Date = order.Date,
+                                         ProviderName = order.ProviderEntity.Name
                                      })
                                      .ToArray();
             return Ok(orders);
@@ -46,9 +46,9 @@ namespace OrderSystem.API.Controllers
             var orders = orderService.GetOrders()
                                      .Select(order => new OrderModel()
                                      {
-                                        Number = order.Number,
-                                        Date = order.Date,
-                                        ProviderName = order.ProviderEntity.Name
+                                         Number = order.Number,
+                                         Date = order.Date,
+                                         ProviderName = order.ProviderEntity.Name
                                      })
                                      .ToArray();
             return Ok(orders);

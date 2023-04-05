@@ -20,10 +20,10 @@ var configurationBuilder = new ConfigurationBuilder().SetBasePath(Environment.Cu
 var configuration = configurationBuilder.Build();
 builder.Configuration.AddConfiguration(configuration);
 
-var hashServiceSettings = configuration.GetSection(nameof(HashServiceSettings)).Get<HashServiceSettings>();
+var hashServiceSettings = configuration.GetSection(nameof(HashServiceSettings)).Get<HashServiceSettings>()!;
 builder.Services.AddScoped(_ => hashServiceSettings);
 
-var jwtSettings = configuration.GetSection(nameof(JwtBearerSettings)).Get<JwtBearerSettings>();
+var jwtSettings = configuration.GetSection(nameof(JwtBearerSettings)).Get<JwtBearerSettings>()!;
 builder.Services.AddScoped(_ => jwtSettings);
 
 // Authentication and Authorization
