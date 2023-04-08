@@ -4,6 +4,7 @@ import appConfig from '../appConfig';
 import LoginRequest from './models/Login/LoginRequest';
 import LoginResponse from './models/Login/LoginResponse';
 import OrdersResponse, { OrdersRequest } from './models/Orders/OrdersResponse';
+import ProvidersResponse from './models/Providers/ProvidersResponse';
 
 const axiosFactory = (): AxiosInstance => {
     const instance = axios.create({
@@ -40,6 +41,9 @@ export default class OrderSystemAPI {
         const response = await this.httpClient.post<OrdersResponse>("/orders", request);
         return response.data;
     }
+
+    public static async GetProvidersAsync(): Promise<ProvidersResponse> {
+        const response = await this.httpClient.get<ProvidersResponse>("/providers");
         return response.data;
     }
 }
