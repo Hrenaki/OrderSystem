@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import 'bootstrap/dist/css/bootstrap.css';
 
-import LoginRequest from "../../api/models/LoginRequest";
+import LoginRequest from "../../api/models/Login/LoginRequest";
 import OrderSystemAPI from "../../api/OrderSystemAPI";
 import { login } from '../../common/UserState';
 
