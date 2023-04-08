@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OrderSystem.API.Models.Providers;
 using OrderSystem.Core.Services;
 
@@ -17,19 +18,26 @@ namespace OrderSystem.API.Controllers
             this.providerService = providerService;
         }
 
-        [HttpGet("names")]
+        [HttpGet]
         [Authorize]
-        public ActionResult<ProviderNamesResponse> GetProviderNames()
+        public async Task<ActionResult<ProvidersResponse>> GetProviderNames()
         {
-            var providerNames = providerService.GetProviders().Select(provider => provider.Name).ToArray();
-            return Ok(new ProviderNamesResponse() { Names = providerNames });
+            var providerNames = (await providerService
+                .GetProviders()
+                .OrderBy(provider => provider.Name)
+                .Select(provider => new { provider.Id, provider.Name })
+                .ToArrayAsync())
+                .Select(provider => new ProvidersResponse.ProviderModel { Id = provider.Id, Name = provider.Name })
+                .ToArray();
+
+            return Ok(new ProvidersResponse() { Providers = providerNames });
         }
 
         [HttpPost("create")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create([FromBody] CreateProviderRequest request)
         {
-            var result = providerService.Create(new Data.Entities.ProviderEntity()
+            var result = providerService.Create(new Data.Entities.ProviderEntity
             {
                 Name = request.Name
             });

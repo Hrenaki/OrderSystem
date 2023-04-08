@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OrderSystem.API.Models.Orders;
 using OrderSystem.Core.Services;
 using OrderSystem.Data.Entities;
@@ -50,16 +51,16 @@ namespace OrderSystem.API.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult CreateOrder([FromBody] CreateOrderModel order)
+        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderModel order)
         {
             if (orderService.GetOrders().Any(o => o.Number == order.Number && o.ProviderEntity.Name == order.Number))
                 return BadRequest("Order already exists");
 
-            if (!providerService.GetProviders().Any(provider => provider.Name == order.ProviderName))
+            var provider = await providerService.GetProviders().FirstOrDefaultAsync(provider => provider.Name == order.ProviderName);
+            if (provider is null)
                 return NotFound($"Provider '{order.ProviderName}' doesn't exist");
 
-            var provider = providerService.GetProviders().First(provider => provider.Name == order.ProviderName);
-            var orderEntity = new OrderEntity()
+            var orderEntity = new OrderEntity
             {
                 Number = order.Number,
                 Date = order.Date,
