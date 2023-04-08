@@ -9,8 +9,13 @@ function App() {
   console.log(isLogged);
 
   return (
-    <div className='vh-100' style={{ backgroundColor: '#202020' }}>
-      <div className="container d-flex justify-content-center h-100">
+    <div style={{ backgroundColor: '#202020' }}>
+    <header>
+      <nav className='navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom mb-3'>
+        <div className='container-fluid'>OrderSystem</div>
+      </nav>
+    </header>
+      <div className="container d-flex justify-content-center vh-100 pb-3">
         {isLogged ? <MainPanel /> : <LoginRegisterPanel backgroundColor={'#FFFFFF'} />}
       </div>
     </div>
