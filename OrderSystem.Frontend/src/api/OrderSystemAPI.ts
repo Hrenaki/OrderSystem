@@ -7,6 +7,8 @@ import OrdersResponse, { OrdersRequest } from './models/Orders/OrdersResponse';
 import ProvidersResponse from './models/Providers/ProvidersResponse';
 import CreateOrderRequest from './models/Order/CreateOrderRequest';
 import CreateOrderResponse from './models/Order/CreateOrderResponse';
+import Order from './models/common/Order';
+import OrderResponse from './models/Order/OrderResponse';
 
 const axiosFactory = (): AxiosInstance => {
     const instance = axios.create({
@@ -54,5 +56,10 @@ export default class OrderSystemAPI {
         if(response.status !== 204)
             return {success: false, message: response.statusText};
         return {success: true, message: ''};
+    }
+
+    public static async GetOrderAsync(id: number): Promise<Order> {
+        const response = await this.httpClient.get<OrderResponse>(`/order/${id}`);
+        return response.data.order;
     }
 }

@@ -28,7 +28,7 @@ export default function OrderForm(props: OrderFormProps) {
     const providerSelectListItems = props.providers.map(p => (
         <option key={p.id} value={p.id}>{p.name}</option>
     ));
-    
+
     return (
         <form>
             <div className="mb-3 row justify-content-center">

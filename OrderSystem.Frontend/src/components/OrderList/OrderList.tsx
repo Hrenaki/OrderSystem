@@ -1,4 +1,4 @@
-import { Order } from "../../api/models/Orders/OrdersResponse";
+import Order from "../../api/models/common/Order";
 
 export interface OrderListProps {
     orders: Order[],

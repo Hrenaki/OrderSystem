@@ -1,7 +1,6 @@
-import React from 'react';
-import { Order } from '../../api/models/Orders/OrdersResponse';
+import Order from "../../api/models/common/Order";
 
-interface OrderListItemProps {
+export interface OrderListItemProps {
     order: Order
 }
 

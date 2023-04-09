@@ -30,22 +30,23 @@ namespace OrderSystem.API.Controllers
             if (order is null)
                 return NotFound($"Can\'t find order with id: {id}");
 
-            var orderItems = order.OrderItemEntities.Select(item => new OrderItemModel()
+            var orderItems = order.OrderItemEntities.Select(item => new OrderItemModel
             {
                 Name = item.Name,
                 Quantity = item.Quantity,
                 Unit = item.Unit
             }).ToArray();
 
-            var detailedOrder = new OrderDetailedModel()
+            var detailedOrder = new OrderDetailedModel
             {
                 Number = order.Number,
                 Date = order.Date,
+                ProviderId = order.ProviderEntityId,
                 ProviderName = order.ProviderEntity.Name,
                 Items = orderItems,
             };
 
-            var orderResponse = new OrderResponse()
+            var orderResponse = new OrderResponse
             {
                 Order = detailedOrder
             };
@@ -77,6 +78,39 @@ namespace OrderSystem.API.Controllers
             };
 
             var result = orderService.CreateOrder(orderEntity);
+            return result.Success ? NoContent() : BadRequest(result.Message);
+        }
+
+        [HttpPost("update")]
+        public IActionResult UpdateOrder([FromBody] UpdateOrderRequest request)
+        {
+            var username = HttpContext.User.Claims.First(claim => claim.Type == JwtTokenClaimTypes.Username).Value;
+
+            var currentUser = userService.GetUserByUsername(username);
+            if (currentUser is null)
+                return Unauthorized();
+
+            var order = orderService.GetOrderById(request.Id);
+            if (order is null)
+                return BadRequest("Order doesn't exist");
+
+            if (order.UserId != currentUser.Id && currentUser.Role != UserRole.Admin)
+                return Forbid("Access denied");
+
+            var result = orderService.UpdateOrder(new OrderEntity
+            {
+                Id = request.Id,
+                Number = request.Number,
+                ProviderEntityId = request.ProviderId,
+                OrderItemEntities = request.Items.Select(i => new OrderItemEntity
+                {
+                    Id = i.Id,
+                    Name = i.Name,
+                    Quantity = i.Quantity,
+                    Unit = i.Unit
+                }).ToList()
+            });
+
             return result.Success ? NoContent() : BadRequest(result.Message);
         }
     }

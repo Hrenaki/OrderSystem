@@ -94,6 +94,11 @@ namespace OrderSystem.Core.Services
             try
             {
                 dbContext.Orders.Update(oldOrder);
+                
+                var nonExistingOrderItems = order.OrderItemEntities.Where(e => !oldOrder.OrderItemEntities.Any(oe => oe.Id == e.Id)).ToArray();
+                dbContext.OrderItems.AddRange(nonExistingOrderItems);
+                dbContext.OrderItems.UpdateRange(order.OrderItemEntities.Except(nonExistingOrderItems));
+
                 dbContext.SaveChanges();
 
                 return new Result() { Success = true };

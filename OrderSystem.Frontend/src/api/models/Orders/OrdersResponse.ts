@@ -1,9 +1,4 @@
-export interface Order {
-    id: number,
-    number: string,
-    date: Date,
-    providerName: string
-}
+import Order from "../common/Order"
 
 export interface OrdersRequest {
     dateFrom: Date | undefined,
