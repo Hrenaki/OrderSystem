@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { useState } from 'react';
 
 interface MultiSelectListItemProps {
-    option: string,
+    option: SelectListOption,
     onSelect: () => void
 };
 
@@ -10,20 +10,26 @@ function MultiSelectListItem(props: MultiSelectListItemProps) {
     return (
         <div className="list-group-item" onChange={props.onSelect}>
             <input className="form-check-input me-2" type="checkbox"/>
-            {props.option}
+            <input type="hidden" value={props.option.key}/>
+            {props.option.value}
         </div>
     );
 };
 
+export interface SelectListOption {
+    key: string,
+    value: string
+}
+
 export interface MultiSelectListProps {
-    options: any[]
+    options: SelectListOption[]
 };
 
 function MultiSelectList(props: MultiSelectListProps) {
     const [selected, setSelected] = useState(Array<any>(0));
 
     const items = props.options.map(o =>
-        <MultiSelectListItem key={o} option={o}
+        <MultiSelectListItem key={o.key} option={o}
             onSelect={() => {
                 console.log(selected);
                 if(selected.some(s => s === o))

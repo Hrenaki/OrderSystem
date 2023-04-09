@@ -14,11 +14,13 @@ namespace OrderSystem.API.Controllers
     {
         private readonly IOrderService orderService;
         private readonly IProviderService providerService;
+        private readonly IUserService userService;
 
-        public OrderController(IOrderService orderService, IProviderService providerService)
+        public OrderController(IOrderService orderService, IProviderService providerService, IUserService userService)
         {
             this.orderService = orderService;
             this.providerService = providerService;
+            this.userService = userService;
         }
 
         [HttpGet("{id:int}")]
@@ -53,24 +55,25 @@ namespace OrderSystem.API.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderModel order)
         {
+            var username = HttpContext.User.Claims.First(claim => claim.Type == JwtTokenClaimTypes.Username).Value;
+
+            var currentUser = userService.GetUserByUsername(username);
+            if (currentUser is null)
+                return Unauthorized();
+
             if (orderService.GetOrders().Any(o => o.Number == order.Number && o.ProviderEntity.Name == order.Number))
                 return BadRequest("Order already exists");
 
-            var provider = await providerService.GetProviders().FirstOrDefaultAsync(provider => provider.Name == order.ProviderName);
+            var provider = await providerService.GetProviders().FirstOrDefaultAsync(provider => provider.Id == order.ProviderId);
             if (provider is null)
-                return NotFound($"Provider '{order.ProviderName}' doesn't exist");
+                return NotFound($"Provider doesn't exist");
 
             var orderEntity = new OrderEntity
             {
                 Number = order.Number,
                 Date = order.Date,
                 ProviderEntityId = provider.Id,
-                OrderItemEntities = order?.Items?.Select(item => new OrderItemEntity()
-                {
-                    Name = item.Name,
-                    Quantity = item.Quantity,
-                    Unit = item.Unit
-                }).ToList()!
+                UserId = currentUser.Id
             };
 
             var result = orderService.CreateOrder(orderEntity);

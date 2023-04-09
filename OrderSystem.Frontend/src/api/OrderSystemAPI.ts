@@ -5,6 +5,8 @@ import LoginRequest from './models/Login/LoginRequest';
 import LoginResponse from './models/Login/LoginResponse';
 import OrdersResponse, { OrdersRequest } from './models/Orders/OrdersResponse';
 import ProvidersResponse from './models/Providers/ProvidersResponse';
+import CreateOrderRequest from './models/Order/CreateOrderRequest';
+import CreateOrderResponse from './models/Order/CreateOrderResponse';
 
 const axiosFactory = (): AxiosInstance => {
     const instance = axios.create({
@@ -45,5 +47,12 @@ export default class OrderSystemAPI {
     public static async GetProvidersAsync(): Promise<ProvidersResponse> {
         const response = await this.httpClient.get<ProvidersResponse>("/providers");
         return response.data;
+    }
+
+    public static async CreateOrderAsync(request: CreateOrderRequest): Promise<CreateOrderResponse> {
+        const response = await this.httpClient.post<CreateOrderResponse>("/order/create", request, {validateStatus: _ => true});
+        if(response.status !== 204)
+            return {success: false, message: response.statusText};
+        return {success: true, message: ''};
     }
 }

@@ -1,0 +1,70 @@
+import { useEffect, useState } from "react";
+import { Provider } from "../../api/models/Providers/ProvidersResponse";
+import { Order } from "../../api/models/Orders/OrdersResponse";
+import OrderSystemAPI from "../../api/OrderSystemAPI";
+import OrderList from "./OrderList";
+import OrderCreateModal from "./OrderCreateModal";
+import CreateOrderRequest from "../../api/models/Order/CreateOrderRequest";
+
+export interface OrderListPanelProps {
+    providers: Provider[]
+};
+
+export default function OrderListPanel(props: OrderListPanelProps) {
+    const [orders, setOrders] = useState(Array<Order>(0));
+    const [error, setError] = useState("");
+    const [modalShown, setModalShown] = useState(false);
+
+    async function getOrders() {
+        try {
+            const response = await OrderSystemAPI.GetOrdersAsync({
+                dateFrom: undefined,
+                dateTo: undefined,
+                providerIds: []
+            });
+            console.log(response.orders);
+
+            if(response.error !== null) {
+                setError(response.error);
+            }
+            else {
+                setOrders(response.orders);
+                setError("");
+            }
+        }
+        catch(error) {
+            setError((error as Error)?.message);
+        }
+    }
+    
+    useEffect(() => { getOrders(); }, []);
+
+    async function createOrder(e: CreateOrderRequest) {
+        const response = await OrderSystemAPI.CreateOrderAsync(e);
+        if(response.success)
+            getOrders();
+        return response;
+    }
+
+    var containerBody = null;
+    if(error !== '')
+        containerBody = error;
+    else if(orders.length < 1)
+        containerBody = 'No orders';
+    else containerBody = <OrderList orders={orders}/>;
+
+    return (
+        <div>
+            <div className="row justify-content-between m-0 mb-3">
+			    <h3 className="col-auto">Orders</h3>
+			    <button className="col-auto btn btn-primary" onClick={() => setModalShown(true)}>Add order</button>
+		    </div>
+
+            <div className="container text-center p-0">
+                {containerBody}
+            </div>
+
+            <OrderCreateModal show={modalShown} providers={props.providers} onSubmit={createOrder} onClose={() => setModalShown(false)}/>
+        </div>
+    );
+}

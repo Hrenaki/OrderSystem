@@ -1,50 +1,39 @@
 import React, { useEffect, useState } from "react";
 import OrderSystemAPI from "../../api/OrderSystemAPI";
-import OrderListItem from "./OrderListItem";
 import { Order } from "../../api/models/Orders/OrdersResponse";
+import Modal from "../common/Modal";
+import { Provider } from "../../api/models/Providers/ProvidersResponse";
 
-function OrderList() {
-    const [orders, setOrders] = useState(Array<Order>(0));
-    const [error, setError] = useState("");
+import '../../styles/Modal.css';
 
-    useEffect(() =>
-    {
-        async function getOrders() {
-            try {
-                const response = await OrderSystemAPI.GetOrdersAsync({
-                    dateFrom: undefined,
-                    dateTo: undefined,
-                    providerIds: []
-                });
-                if(response.error !== null) {
-                    setError(response.error);
-                }
-                else {
-                    setOrders(response.orders);
-                    setError("");
-                }
-            }
-            catch(error) {
-                setError((error as Error)?.message);
-            }
-        }
-        
-        getOrders();
-    });
+export interface OrderListProps {
+    orders: Order[]
+}
 
-    const listItems = orders.map(order => (<OrderListItem order={order}/>));
+function OrderList(props: OrderListProps) {
+    const listItems = props.orders.map((order, index) => (
+        <tr key={order.id}>
+            <th scope="row">{index + 1}</th>
+            <td>{order.number}</td>
+            <td>{order.providerName}</td>
+            <td>{new Date(order.date.toString()).toLocaleDateString('sv')}</td>
+        </tr>
+    ));
 
-    const containerBody = error === "" ? listItems : (<span>{error}</span>);
     return (
-        <div>
-            <div className="row justify-content-between m-0">
-			    <h3 className="col-auto">Orders</h3>
-			    <button className="col-auto btn btn-primary">Add order</button>
-		    </div>
-            <div className="container text-center">
-                {containerBody}
-            </div>
-        </div>
+        <table className="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Number</th>
+                    <th scope="col">Provider</th>
+                    <th scope="col">Date</th>
+                    </tr>
+            </thead>
+            <tbody>
+                {listItems}
+            </tbody>
+        </table>
     );
 }
 

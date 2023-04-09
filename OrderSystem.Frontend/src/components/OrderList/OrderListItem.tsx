@@ -6,12 +6,14 @@ interface OrderListItemProps {
 }
 
 function OrderListItem(props: OrderListItemProps) {
+    console.log(props.order.date);
+    
     return (
-        <button className="grid text-center">
-            <div className="g-col-4">{props.order.id}</div>
-            <div className="g-col-4">{props.order.number}</div>
-            <div className="g-col-4">{props.order.date.toLocaleDateString('sv')}</div>
-            <div className="g-col-4">{props.order.providerName}</div>
+        <button className="row text-center w-100 m-0">
+            <div className="col">{props.order.id}</div>
+            <div className="col">{props.order.number}</div>
+            
+            <div className="col">{props.order.providerName}</div>
         </button>
     );
 }

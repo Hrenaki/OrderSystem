@@ -30,7 +30,7 @@ namespace OrderSystem.API.Controllers
                 return Unauthorized();
 
             var orders = orderService.GetOrders().Where(order => order.UserId == currentUser.Id)
-                                     .Select(order => new OrderModel()
+                                     .Select(order => new OrderModel
                                      {
                                          Number = order.Number,
                                          Date = order.Date,
@@ -74,7 +74,7 @@ namespace OrderSystem.API.Controllers
                 })
                 .ToArray();
 
-            return Ok(response);
+            return Ok(new OrdersResponse { Orders = response });
         }
 
         [HttpGet("all")]

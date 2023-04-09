@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using OrderSystem.Core.Services;
 using OrderSystem.Core.Services.Filters;
 using OrderSystem.Data.Entities;
@@ -96,7 +97,7 @@ namespace OrderSystem.Web.Controllers
       [HttpGet("get")]
       public IActionResult GetOrders()
       {
-         var orders = orderService.GetOrders().ToArray();
+         var orders = orderService.GetOrders().Include(order => order.ProviderEntity).ToArray();
          return PartialView(IndexViewName, new OrdersViewModel(orders));
       }
 

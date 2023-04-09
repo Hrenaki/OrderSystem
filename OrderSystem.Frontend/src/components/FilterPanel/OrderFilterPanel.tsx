@@ -1,10 +1,10 @@
 import { OrdersRequest } from "../../api/models/Orders/OrdersResponse";
-import { useEffect, useState } from "react";
-import MultiSelectList from "../common/MultiSelectList";
-import OrderSystemAPI from "../../api/OrderSystemAPI";
+import { useState } from "react";
+import MultiSelectList, { SelectListOption } from "../common/MultiSelectList";
 import { Provider } from "../../api/models/Providers/ProvidersResponse";
 
 export interface OrderFilterPanelProps {
+    providers: Provider[],
     onClick: (request: OrdersRequest) => void;
 };
 
@@ -16,17 +16,6 @@ function OrderFilterPanel (props: OrderFilterPanelProps) {
     const [dateFrom, setDateFrom] = useState(date.toLocaleDateString('sv'));
 
     const [providerListIsVisible, setProviderListIsVisible] = useState(false);
-
-    const [providers, setProviders] = useState(Array<Provider>(0));
-    useEffect(() =>
-    {
-        async function getProviders() {
-            const response = await OrderSystemAPI.GetProvidersAsync();
-            setProviders(response.providers);
-        }
-
-        getProviders();
-    }, []);
 
     const OnDateFromChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDateFrom(e.currentTarget.value);
@@ -68,7 +57,9 @@ function OrderFilterPanel (props: OrderFilterPanelProps) {
             </div>
 
             <button className="btn btn-outline-primary w-100 mb-3" type="button" onClick={() => setProviderListIsVisible(!providerListIsVisible)}>Providers</button>
-            {providerListIsVisible ? <MultiSelectList options={providers.map(p => p.name)} /> : "" }
+            {providerListIsVisible ? <MultiSelectList options={props.providers.map(p => {
+                return {key: p.id.toString(), value: p.name};
+            })} /> : "" }
         </form>
     )
 };
