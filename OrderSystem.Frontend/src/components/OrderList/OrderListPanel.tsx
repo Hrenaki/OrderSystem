@@ -46,18 +46,22 @@ export default function OrderListPanel(props: OrderListPanelProps) {
         return response;
     }
 
+    function onOrderSelect(id: number) {
+        console.log(id);
+    }
+
     var containerBody = null;
     if(error !== '')
         containerBody = error;
     else if(orders.length < 1)
         containerBody = 'No orders';
-    else containerBody = <OrderList orders={orders}/>;
+    else containerBody = <OrderList orders={orders} onOrderSelect={onOrderSelect}/>;
 
     return (
         <div>
             <div className="row justify-content-between m-0 mb-3">
 			    <h3 className="col-auto">Orders</h3>
-			    <button className="col-auto btn btn-primary" onClick={() => setModalShown(true)}>Add order</button>
+			    <button className="col-auto btn btn-primary" onClick={() => {console.log("clicked"); setModalShown(true);}}>Add order</button>
 		    </div>
 
             <div className="container text-center p-0">

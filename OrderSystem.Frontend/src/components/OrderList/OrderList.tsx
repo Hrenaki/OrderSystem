@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from "react";
-import OrderSystemAPI from "../../api/OrderSystemAPI";
 import { Order } from "../../api/models/Orders/OrdersResponse";
-import Modal from "../common/Modal";
-import { Provider } from "../../api/models/Providers/ProvidersResponse";
-
-import '../../styles/Modal.css';
 
 export interface OrderListProps {
-    orders: Order[]
+    orders: Order[],
+    onOrderSelect: (orderId: number) => void
 }
 
 function OrderList(props: OrderListProps) {
     const listItems = props.orders.map((order, index) => (
-        <tr key={order.id}>
+        <tr key={order.id} onClick={() => props.onOrderSelect(order.id)}>
             <th scope="row">{index + 1}</th>
             <td>{order.number}</td>
             <td>{order.providerName}</td>
@@ -21,7 +16,7 @@ function OrderList(props: OrderListProps) {
     ));
 
     return (
-        <table className="table">
+        <table className="table table-hover">
             <thead>
                 <tr>
                     <th scope="col">#</th>
