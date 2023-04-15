@@ -22,26 +22,14 @@ export interface SelectListOption {
 }
 
 export interface MultiSelectListProps {
-    options: SelectListOption[]
+    options: SelectListOption[],
+    onSelect: (option: SelectListOption) => void
 };
 
 function MultiSelectList(props: MultiSelectListProps) {
-    const [selected, setSelected] = useState(Array<any>(0));
-
-    const items = props.options.map(o =>
-        <MultiSelectListItem key={o.key} option={o}
-            onSelect={() => {
-                console.log(selected);
-                if(selected.some(s => s === o))
-                    setSelected(selected.filter(s => s !== o));
-                else setSelected([...selected, o]);
-            }}
-        />
-    );
-
     return (
-        <ul className="list-group text-start">
-            {items}
+        <ul className="list-group text-start mb-3 border border-secondary">
+            {props.options.map(o => <MultiSelectListItem key={o.key} option={o} onSelect={() => props.onSelect(o)} />)}
         </ul>
     );
 };

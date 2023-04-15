@@ -8,45 +8,22 @@ import Order from "../../api/models/common/Order";
 import OrderEditModal from "./OrderEditModal";
 
 export interface OrderListPanelProps {
-    providers: Provider[]
+    providers: Provider[],
+    orders: Order[],
+    error: string,
+    refreshOrders: () => void
 };
 
 export default function OrderListPanel(props: OrderListPanelProps) {
-    const [orders, setOrders] = useState(Array<Order>(0));
-    const [error, setError] = useState("");
     const [createOrderModalShow, setCreateOrderModalShow] = useState(false);
     
     const [editOrderModalShow, setEditOrderModalShow] = useState(false);
     const [edittingOrder, setEdittingOrder] = useState({id: -1, number: '', date: new Date(), providerId: -1, providerName: ''});
 
-    async function getOrders() {
-        try {
-            const response = await OrderSystemAPI.GetOrdersAsync({
-                dateFrom: undefined,
-                dateTo: undefined,
-                providerIds: []
-            });
-            console.log(response.orders);
-
-            if(response.error !== null) {
-                setError(response.error);
-            }
-            else {
-                setOrders(response.orders);
-                setError("");
-            }
-        }
-        catch(error) {
-            setError((error as Error)?.message);
-        }
-    }
-    
-    useEffect(() => { getOrders(); }, []);
-
     async function createOrder(e: CreateOrderRequest) {
         const response = await OrderSystemAPI.CreateOrderAsync(e);
         if(response.success)
-            getOrders();
+            props.refreshOrders();
         return response;
     }
 
@@ -57,11 +34,11 @@ export default function OrderListPanel(props: OrderListPanelProps) {
     }
 
     var containerBody = null;
-    if(error !== '')
-        containerBody = error;
-    else if(orders.length < 1)
+    if(props.error !== '')
+        containerBody = props.error;
+    else if(props.orders.length < 1)
         containerBody = 'No orders';
-    else containerBody = <OrderList orders={orders} onOrderSelect={onOrderSelect}/>;
+    else containerBody = <OrderList orders={props.orders} onOrderSelect={onOrderSelect}/>;
 
     return (
         <div>
