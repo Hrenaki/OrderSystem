@@ -22,6 +22,12 @@ namespace OrderSystem.Data
                new ProviderEntity() { Id = 2, Name = "Google" },
                new ProviderEntity() { Id = 3, Name = "Intel" }
             );
+
+            modelBuilder.Entity<OrderItemEntity>()
+                .Property(oie => oie.Id)
+                .ValueGeneratedOnAdd()
+                .Metadata
+                .SetBeforeSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
         }
     }
 }

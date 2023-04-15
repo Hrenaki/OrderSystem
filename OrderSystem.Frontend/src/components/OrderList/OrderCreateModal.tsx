@@ -6,6 +6,7 @@ import CreateOrderResponse from "../../api/models/Order/CreateOrderResponse";
 import OrderForm, { OrderFormValues } from "./OrderForm";
 
 import '../../styles/Modal.css';
+import Order, { Order as DefaultOrder } from "../../api/models/common/Order";
 
 export interface CreateOrderModalProps {
     show: boolean,
@@ -15,21 +16,21 @@ export interface CreateOrderModalProps {
 }
 
 export default function OrderCreateModal(props: CreateOrderModalProps) {
-    const [formValues, setFormValues] = useState({number: '', date: new Date(), providerId: -1});
+    const [order, setOrder] = useState(DefaultOrder);
     const [error, setError] = useState('');
 
-    function onFormValuesChange(e: OrderFormValues) {
-        setFormValues(e);
+    function onFormValuesChange(e: Order) {
+        setOrder({...e, draft: true});
     }
     
     useEffect(() =>
     {
         const providerId = props.providers.length > 0 ? props.providers[0].id : -1;
-        onFormValuesChange({...formValues, providerId});
+        onFormValuesChange({...order, providerId});
     }, [props.providers]);
 
     async function onSubmit() {
-        var response = await props.onSubmit(formValues);
+        var response = await props.onSubmit(order);
         if(response.success)
             props.onClose();
         else setError(response.message);
@@ -43,7 +44,7 @@ export default function OrderCreateModal(props: CreateOrderModalProps) {
                     <button type="button" className="btn-close" onClick={() => props.onClose()}></button>
                 </div>
                 <div className="modal-body">
-                    <OrderForm values={formValues} providers={props.providers} onChange={onFormValuesChange}/>
+                    <OrderForm order={order} providers={props.providers} onChange={onFormValuesChange}/>
                 </div>
 
                 <div className="modal-footer">

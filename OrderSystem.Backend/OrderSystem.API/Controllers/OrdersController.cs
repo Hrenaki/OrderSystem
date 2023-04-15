@@ -21,7 +21,7 @@ namespace OrderSystem.API.Controllers
 
         [HttpGet]
         [Authorize]
-        public ActionResult<OrdersResponse> GetOrders()
+        public async Task<ActionResult<OrdersResponse>> GetOrders()
         {
             var username = HttpContext.User.Claims.First(claim => claim.Type == JwtTokenClaimTypes.Username).Value;
 
@@ -29,14 +29,19 @@ namespace OrderSystem.API.Controllers
             if (currentUser is null)
                 return Unauthorized();
 
-            var orders = orderService.GetOrders().Where(order => order.UserId == currentUser.Id)
-                                     .Select(order => new OrderModel
-                                     {
-                                         Number = order.Number,
-                                         Date = order.Date,
-                                         ProviderName = order.ProviderEntity.Name
-                                     })
-                                     .ToArray();
+            var orders = (await orderService
+                .GetOrders()
+                .Where(order => order.UserId == currentUser.Id)
+                .ToArrayAsync())
+                .Select(order => new OrderModel
+                {
+                    Id = order.Id,
+                    Number = order.Number,
+                    Date = order.Date,
+                    ProviderId = order.ProviderEntityId,
+                    ProviderName = order.ProviderEntity.Name
+                })
+                .ToArray();
             return Ok(orders);
         }
 
@@ -55,7 +60,7 @@ namespace OrderSystem.API.Controllers
             if (request.DateFrom.HasValue)
                 orders = orders.Where(order => order.Date >= request.DateFrom);
 
-            if(request.DateTo.HasValue)
+            if (request.DateTo.HasValue)
                 orders = orders.Where(order => order.Date <= request.DateTo);
 
             if (request.ProviderIds is not null && request.ProviderIds.Any())
@@ -63,14 +68,14 @@ namespace OrderSystem.API.Controllers
 
             var response = (await orders
                 .Include(order => order.ProviderEntity)
-                .Select(order => new { order.Id, order.Number, order.Date, ProviderName = order.ProviderEntity.Name })
                 .ToArrayAsync())
                 .Select(order => new OrderModel
                 {
                     Id = order.Id,
                     Number = order.Number,
                     Date = order.Date,
-                    ProviderName = order.ProviderName
+                    ProviderId = order.ProviderEntityId,
+                    ProviderName = order.ProviderEntity.Name
                 })
                 .ToArray();
 

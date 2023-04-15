@@ -19,7 +19,7 @@ const MainPanel: React.FC = () => {
 
     async function getOrders(request: OrdersRequest) {
         console.log(request);
-        
+
         try {
             const response = await OrderSystemAPI.GetOrdersAsync(request);
 
@@ -48,13 +48,19 @@ const MainPanel: React.FC = () => {
         getAllOrders();
     }, []);
 
+    function setOrder(order: Order) {
+        var tempOrders = orders.filter(o => o.id !== order.id);
+        setOrders([...tempOrders, order].sort((a, b) => a.number.localeCompare(b.number)));
+    }
+
+    const sortedOrders = orders.sort((a, b) => a.number.localeCompare(b.number));
     return (
         <div className='container text-center row justify-content-between'>
             <div className='col-3 bg-light border rounded-4 p-3'>
                 <OrderFilterPanel providers={providers} onClick={getOrders} />
             </div>
             <div className='col-8 bg-light border rounded-4 p-3'>
-                <OrderListPanel providers={providers} orders={orders} error={error} refreshOrders={getAllOrders} />
+                <OrderListPanel providers={providers} orders={sortedOrders} error={error} setOrder={setOrder} refreshOrders={getAllOrders} />
             </div>
         </div>
     );

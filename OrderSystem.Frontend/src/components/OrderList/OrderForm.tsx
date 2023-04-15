@@ -1,6 +1,9 @@
+import { useEffect, useState } from "react";
 import { Provider } from "../../api/models/Providers/ProvidersResponse";
+import Order from "../../api/models/common/Order";
 
 export interface OrderFormValues {
+    id: number,
     number: string,
     date: Date,
     providerId: number
@@ -8,21 +11,35 @@ export interface OrderFormValues {
 
 export interface OrderFormProps {
     providers: Provider[],
-    values: OrderFormValues,
-    onChange: (values: OrderFormValues) => void
+    order: Order,
+    onChange: (values: Order) => void
 }
 
 export default function OrderForm(props: OrderFormProps) {
+    const [number, setNumber] = useState(props.order.number);
+    const [date, setDate] = useState(props.order.date);
+    const [providerId, setProviderId] = useState(props.order.providerId);
+
+    useEffect(() => {
+        setNumber(props.order.number);
+        setDate(props.order.date);
+        setProviderId(props.order.providerId);
+    }, [props.order]);
+
     function onNumberChange(e: React.ChangeEvent<HTMLInputElement>) {
-        props.onChange({...props.values, number: e.currentTarget.value});
+        setNumber(e.currentTarget.value);
+        props.onChange({...props.order, number: e.currentTarget.value});
     }
 
     function onDateChange(e: React.ChangeEvent<HTMLInputElement>) {
-        props.onChange({...props.values, date: new Date(e.currentTarget.value)});
+        setDate(e.currentTarget.valueAsDate!);
+        props.onChange({...props.order, date: e.currentTarget.valueAsDate!});
     }
 
     function onProviderIdChange(e: React.ChangeEvent<HTMLSelectElement>) {
-        props.onChange({...props.values, providerId: Number.parseInt(e.currentTarget.value)});
+        const newProviderId = Number.parseInt(e.currentTarget.value);
+        setProviderId(newProviderId);
+        props.onChange({...props.order, providerId: newProviderId, providerName: props.providers.find(p => p.id === newProviderId)!.name});
     }
 
     const providerSelectListItems = props.providers.map(p => (
@@ -37,11 +54,7 @@ export default function OrderForm(props: OrderFormProps) {
                     <input type="text"
                         onChange={onNumberChange}
                         className="form-control"
-                        data-val="true"
-                        data-val-required="Number isn't set"
-                        id="Number"
-                        name="Number"
-                        value={props.values.number}/>
+                        value={number}/>
                 </div>
             </div>
 
@@ -51,11 +64,7 @@ export default function OrderForm(props: OrderFormProps) {
                     <input type="date"
                         onChange={onDateChange}
                         className="form-control"
-                        data-val="true"
-                        data-val-required="Date isn't set"
-                        id="Date"
-                        name="Date"
-                        value={props.values.date.toLocaleDateString('sv')}/>
+                        value={date.toLocaleDateString('sv')}/>
                 </div>
             </div>
 
@@ -64,10 +73,7 @@ export default function OrderForm(props: OrderFormProps) {
                 <div className="col-sm-5">
                     <select className="form-select"
                         onChange={onProviderIdChange}
-                        data-val="true"
-                        data-val-required="ProviderId isn't set"
-                        id="ProviderId"
-                        name="ProviderId">
+                        value={providerId}>
                         {providerSelectListItems}
                     </select>
                 </div>

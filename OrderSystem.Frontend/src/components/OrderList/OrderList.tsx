@@ -7,13 +7,14 @@ export interface OrderListProps {
 
 function OrderList(props: OrderListProps) {
     const listItems = props.orders.map((order, index) => (
-        <tr key={order.id} onClick={() => props.onOrderSelect(order.id)}>
-            <th scope="row">{index + 1}</th>
-            <td>{order.number}</td>
-            <td>{order.providerName}</td>
-            <td>{new Date(order.date.toString()).toLocaleDateString('sv')}</td>
-        </tr>
-    ));
+            <tr key={order.id} className={order.draft ? 'table-warning' : ''} onClick={() => props.onOrderSelect(order.id)}>
+                <th scope="row">{index + 1}</th>
+                <td>{order.number}</td>
+                <td>{order.providerName}</td>
+                <td>{new Date(order.date.toString()).toLocaleDateString('sv')}</td>
+            </tr>
+        )
+    );
 
     return (
         <table className="table table-hover">

@@ -49,7 +49,11 @@ builder.Services.AddAuthorization();
 
 // Databases
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("default"));
+    if(builder.Environment.IsDevelopment())
+        options.EnableSensitiveDataLogging();
+});
 
 // Custom services
 builder.Services.AddScoped<IOrderService, OrderService>();

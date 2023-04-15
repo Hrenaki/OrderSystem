@@ -78,7 +78,7 @@ namespace OrderSystem.Core.Services
                 };
             }
 
-            if (dbContext.Orders.Any(o => o.Number == order.Number && o.ProviderEntityId == order.ProviderEntityId))
+            if (dbContext.Orders.Any(o => o.Id != order.Id && o.Number == order.Number && o.ProviderEntityId == order.ProviderEntityId))
             {
                 return new Result()
                 {

@@ -39,6 +39,7 @@ namespace OrderSystem.API.Controllers
 
             var detailedOrder = new OrderDetailedModel
             {
+                Id = order.Id,
                 Number = order.Number,
                 Date = order.Date,
                 ProviderId = order.ProviderEntityId,
@@ -101,13 +102,15 @@ namespace OrderSystem.API.Controllers
             {
                 Id = request.Id,
                 Number = request.Number,
+                Date = request.Date,
                 ProviderEntityId = request.ProviderId,
                 OrderItemEntities = request.Items.Select(i => new OrderItemEntity
                 {
                     Id = i.Id,
                     Name = i.Name,
                     Quantity = i.Quantity,
-                    Unit = i.Unit
+                    Unit = i.Unit,
+                    OrderEntityId = order.Id
                 }).ToList()
             });
 

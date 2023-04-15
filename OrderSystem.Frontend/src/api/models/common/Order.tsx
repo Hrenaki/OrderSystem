@@ -6,5 +6,14 @@ export default interface Order {
     date: Date,
     providerId: number,
     providerName: string,
-    items?: OrderItem[]
+    items?: OrderItem[],
+    draft: boolean
 }
+
+export const Order = {
+    id: -1,
+    number: '',
+    date: new Date(),
+    providerId: -1,
+    providerName: ''
+} as Order;

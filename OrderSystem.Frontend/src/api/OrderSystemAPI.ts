@@ -62,4 +62,8 @@ export default class OrderSystemAPI {
         const response = await this.httpClient.get<OrderResponse>(`/order/${id}`);
         return response.data.order;
     }
+
+    public static async PostOrderAsync(order: Order): Promise<void> {
+        await this.httpClient.post("/order/update", order);
+    }
 }
