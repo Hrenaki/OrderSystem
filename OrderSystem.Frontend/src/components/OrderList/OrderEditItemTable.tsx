@@ -31,15 +31,35 @@ export default function OrderEditItemTable(props: OrderEditItemTableProps) {
             props.setOrderItems(props.items.filter(i => i.id !== item.id));
     };
 
-    const items = props.items?.map(item => (
-        <tr key={item.id}>
-            <th scope="row">{item.name}</th>
-            <td>{item.quantity}</td>
-            <td>{item.unit}</td>
-            <td><button id="1-item-edit-btn" className="btn btn-outline-primary w-auto">Edit</button></td>
-            <td><button id="1-item-delete-btn" className="btn btn-outline-danger w-auto" onClick={() => DeleteOrderItem(item)}>Delete</button></td>
-        </tr>
-    ));
+    const items = props.items !== undefined && props.items!.length > 0 ?
+        <div className="table-responsive-lg">
+            <table id="order-items-table" className="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Unit</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {props.items!.map(item => (
+                            <tr key={item.id}>
+                                <th scope="row">{item.name}</th>
+                                <td>{item.quantity}</td>
+                                <td>{item.unit}</td>
+                                <td><button id="1-item-edit-btn" className="btn btn-outline-primary w-auto">Edit</button></td>
+                                <td><button id="1-item-delete-btn" className="btn btn-outline-danger w-auto" onClick={() => DeleteOrderItem(item)}>Delete</button></td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
+        : '';
+
+    console.log(items);
 
     return (
         <div>
@@ -48,22 +68,7 @@ export default function OrderEditItemTable(props: OrderEditItemTableProps) {
                 <button className="btn btn-primary col-3" onClick={() => AddOrderItem()}>Add item</button>
             </div>
 
-            <div className="table-responsive-lg">
-                <table id="order-items-table" className="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Unit</th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items}
-                    </tbody>
-                </table>
-            </div>
+            {items}
         </div>
     );
 }
